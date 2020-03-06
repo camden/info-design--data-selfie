@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Stage, Rect, Layer, Circle, Line, Image } from 'react-konva';
-import birdData from '../data/birds-subset';
+import birdData from '../data/birds';
 import WorldMapSVG from '../assets/world-map2.svg';
 import useImage from 'use-image';
 
@@ -24,20 +24,39 @@ const stringToColor = function(str: string) {
   return colour;
 };
 
+const scaleX = (x: number) => x * POINT_SCALE + X_ADJUST;
+const scaleY = (y: number) => y * POINT_SCALE + Y_ADJUST;
+
 const Point: React.FC<PointProps> = ({ x, y, color }) => {
   return (
-    <Circle
-      x={x * POINT_SCALE + X_ADJUST}
-      y={y * POINT_SCALE + Y_ADJUST}
-      radius={5}
-      fill={color || 'red'}
-    />
+    <Circle x={scaleX(x)} y={scaleY(y)} radius={2} fill={color || 'red'} />
   );
 };
 
 const POINT_SCALE = 0.5;
 const X_ADJUST = 0;
 const Y_ADJUST = 200;
+
+interface BirdObj {
+  prebreeding_migration?: BirdSeasonEntry;
+  postbreeding_migration?: BirdSeasonEntry;
+  nonbreeding?: BirdSeasonEntry;
+  breeding?: BirdSeasonEntry;
+}
+
+interface BirdSeasonEntry {
+  common_name: string;
+  season: string;
+  region: string;
+  x: number;
+  y: number;
+}
+
+const pointsArrayFromBirdObj = (b: BirdObj): number[] => {
+  return Object.values(b).reduce((arr, cur) => {
+    return [...arr, scaleX(cur.x), scaleY(cur.y)];
+  }, []);
+};
 
 const Map = () => {
   const [img] = useImage(WorldMapSVG);
@@ -63,11 +82,24 @@ const Map = () => {
         />
       </Layer>
       <Layer>
-        {birds.map(obj =>
-          Object.values(obj).map(s => (
-            <Point x={s.x} y={s.y} color={stringToColor(s.common_name)} />
-          ))
-        )}
+        {birds.map(obj => (
+          <>
+            <Line
+              key={Object.values(obj)[0].common_name}
+              points={pointsArrayFromBirdObj(obj)}
+              stroke={stringToColor(Object.values(obj)[0].common_name)}
+              tension={0.3}
+            />
+            {Object.values(obj).map(s => (
+              <Point
+                key={`${s.common_name} ${s.season}`}
+                x={s.x}
+                y={s.y}
+                color={stringToColor(s.common_name)}
+              />
+            ))}
+          </>
+        ))}
       </Layer>
     </Stage>
   );
