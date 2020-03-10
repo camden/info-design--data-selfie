@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Image, Layer, Line, Stage } from 'react-konva';
 import useImage from 'use-image';
 import WorldMapSVG from '../assets/world-map2.svg';
@@ -11,19 +11,18 @@ import pointsArrayFromBirdObj from '../utils/points-array-from-bird-obj';
 /// <reference path="../react-control-panel.d.ts"/>
 import ControlPanel, { Checkbox, Range } from 'react-control-panel';
 import useInterval from '../utils/use-interval';
+import styles from './Map.module.css';
 
-const INCREMENT = 1;
-const DELAY_MS = 200;
 const CANVAS_WIDTH = 550;
 const CANVAS_HEIGHT = 740;
 
 const Map = () => {
   const [drawLines, setDrawLines] = useState(false);
   const [drawPoints, setDrawPoints] = useState(false);
-  const [birdRadius, setBirdRadius] = useState(3);
-  const [birdOpacity, setBirdOpacity] = useState(0.5);
-  const [delayMs, setDelayMs] = useState(200);
-  const [birdMovementIncrement, setBirdMovementIncrement] = useState(1);
+  const [birdRadius, setBirdRadius] = useState(2);
+  const [birdOpacity, setBirdOpacity] = useState(0.7);
+  const [delayMs, setDelayMs] = useState(10);
+  const [birdMovementIncrement, setBirdMovementIncrement] = useState(0.1);
 
   const onControlChange = useCallback((label, newValue) => {
     switch (label) {
@@ -60,7 +59,7 @@ const Map = () => {
 
     if (time + birdMovementIncrement >= 99) {
       setIsCountingDown(true);
-    } else if (time - birdMovementIncrement < 0) {
+    } else if (time - birdMovementIncrement <= 0) {
       setIsCountingDown(false);
     }
   }, delayMs);
@@ -78,7 +77,7 @@ const Map = () => {
   });
 
   return (
-    <>
+    <div className={styles.main}>
       <ControlPanel onChange={onControlChange}>
         <Checkbox label="draw_lines" initial={drawLines}></Checkbox>
         <Checkbox label="draw_points" initial={drawPoints}></Checkbox>
@@ -100,7 +99,13 @@ const Map = () => {
           max={2}
           initial={birdMovementIncrement}
         ></Range>
-        <Range label="delay_ms" min={10} max={500} initial={delayMs}></Range>
+        <Range
+          label="delay_ms"
+          min={10}
+          max={500}
+          initial={delayMs}
+          step={1}
+        ></Range>
       </ControlPanel>
       <Stage width={CANVAS_WIDTH} height={CANVAS_HEIGHT}>
         <Layer>
@@ -148,7 +153,7 @@ const Map = () => {
           ))}
         </Layer>
       </Stage>
-    </>
+    </div>
   );
 };
 
