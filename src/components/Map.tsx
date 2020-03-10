@@ -71,6 +71,7 @@ const Map = () => {
 
   return (
     <div className={styles.main}>
+      <h2 className={styles.day}>Day {Math.round((time / 100) * 365)}</h2>
       <ControlPanel onChange={onControlChange}>
         <Checkbox label="draw_lines" initial={drawLines}></Checkbox>
         <Checkbox label="draw_points" initial={drawPoints}></Checkbox>
