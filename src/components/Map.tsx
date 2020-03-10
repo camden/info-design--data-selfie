@@ -21,7 +21,7 @@ const Map = () => {
   const [drawPoints, setDrawPoints] = useState(false);
   const [birdRadius, setBirdRadius] = useState(2);
   const [birdOpacity, setBirdOpacity] = useState(0.7);
-  const [delayMs, setDelayMs] = useState(100);
+  const [delayMs, setDelayMs] = useState(10);
   const [birdMovementIncrement, setBirdMovementIncrement] = useState(0.1);
 
   const onControlChange = useCallback((label, newValue) => {
