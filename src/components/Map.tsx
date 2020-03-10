@@ -100,7 +100,7 @@ const Map = () => {
           max={2}
           initial={birdMovementIncrement}
         ></Range>
-        <Range label="delay_ms" min={20} max={500} initial={delayMs}></Range>
+        <Range label="delay_ms" min={10} max={500} initial={delayMs}></Range>
       </ControlPanel>
       <Stage width={CANVAS_WIDTH} height={CANVAS_HEIGHT}>
         <Layer>
