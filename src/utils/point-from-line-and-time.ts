@@ -27,9 +27,9 @@ const pointFromLineAndTime = (line: number[], percent: number): PointObj => {
 
   let totalLength = 0;
   let lineSegments: LineSegment[] = [];
-  for (let i = 0; i < allPoints.length - 1; i++) {
+  for (let i = 0; i < allPoints.length; i++) {
     const p1 = allPoints[i];
-    const p2 = allPoints[i + 1];
+    const p2 = allPoints[(i + 1) % allPoints.length];
 
     const line: LineSegment = { p1, p2, length: getLengthBetween(p1, p2) };
 

@@ -21,7 +21,7 @@ const Map = () => {
   const [drawPoints, setDrawPoints] = useState(false);
   const [birdRadius, setBirdRadius] = useState(2);
   const [birdOpacity, setBirdOpacity] = useState(0.7);
-  const [delayMs, setDelayMs] = useState(10);
+  const [delayMs, setDelayMs] = useState(100);
   const [birdMovementIncrement, setBirdMovementIncrement] = useState(0.1);
 
   const onControlChange = useCallback((label, newValue) => {
@@ -48,19 +48,12 @@ const Map = () => {
   }, []);
 
   const [time, setTime] = useState(0);
-  const [isCountingDown, setIsCountingDown] = useState(false);
 
   useInterval(() => {
-    if (isCountingDown) {
-      setTime(time - birdMovementIncrement);
+    if (time >= 99) {
+      setTime(1);
     } else {
       setTime(time + birdMovementIncrement);
-    }
-
-    if (time + birdMovementIncrement >= 99) {
-      setIsCountingDown(true);
-    } else if (time - birdMovementIncrement <= 0) {
-      setIsCountingDown(false);
     }
   }, delayMs);
 
@@ -129,7 +122,8 @@ const Map = () => {
                   key={`${bird.common_name} line`}
                   points={pointsArrayFromBirdObj(bird, true)}
                   stroke={stringToColor(bird.common_name)}
-                  opacity={0.1}
+                  closed
+                  opacity={0.2}
                 />
               )}
               {drawPoints &&
