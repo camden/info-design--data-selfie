@@ -7,15 +7,17 @@ export interface PointProps {
   y: number;
   color?: string;
   radius?: number;
+  opacity?: number;
 }
 
-const Point: React.FC<PointProps> = ({ x, y, color, radius }) => {
+const Point: React.FC<PointProps> = ({ x, y, color, radius, opacity }) => {
   return (
     <Circle
       x={scaleX(x)}
       y={scaleY(y)}
       radius={radius || 2}
       fill={color || 'red'}
+      opacity={opacity}
     />
   );
 };
