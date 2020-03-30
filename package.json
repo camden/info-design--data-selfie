@@ -1,6 +1,7 @@
 {
   "name": "my-app",
   "version": "0.1.0",
+  "homepage": "https://camden.github.io/info-design--data-selfie/",
   "private": true,
   "dependencies": {
     "@react-hook/mouse-position": "^3.1.0",
