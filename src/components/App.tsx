@@ -1,13 +1,12 @@
 import React from 'react';
-import Map from './Map';
 
 import styles from './App.module.css';
+import Chart from './Chart';
 
 function App() {
   return (
     <div className={styles.app}>
-      <h1 className={styles.title}>Birds in Motion</h1>
-      <Map />
+      <Chart />
     </div>
   );
 }

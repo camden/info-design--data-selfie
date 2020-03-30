@@ -1,6 +1,5 @@
 {
   "name": "my-app",
-  "homepage": "https://camden.github.io/info-design--bird-map/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
