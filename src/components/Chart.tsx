@@ -48,15 +48,15 @@ const distanceToColor = (dist: number): string => {
 const Chart = () => {
   const percentages = Locations.map(l => {
     const datePercent = getPercentOfDateBetween(
-      l.arrivalDateTime,
+      l.time,
       START_DATE_MS,
       END_DATE_MS
     );
-    const key = l.leavingDateTime;
+    const key = l.time;
     return {
       key,
       datePercent,
-      distance: l.distanceFromHomeMiles,
+      distance: l.distance,
     };
   });
 
