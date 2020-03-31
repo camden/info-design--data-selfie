@@ -1,0 +1,9 @@
+.locationBox {
+  position: absolute;
+  background-color: white;
+  padding: 8px;
+  width: 500px;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}

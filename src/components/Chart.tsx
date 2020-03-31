@@ -3,6 +3,7 @@ import { Stage, Line, Layer, Text } from 'react-konva';
 import Locations from '../data/location-data';
 import Point from './Point';
 import useMousePosition, { MousePosition } from '@react-hook/mouse-position';
+import styles from './Chart.module.css';
 
 const START_DATE_MS = 1580083200; // 1/27 at midnight
 const END_DATE_MS = 1585531182; // 3/29 at 6:19pm
@@ -13,8 +14,8 @@ const HEIGHT = window.innerHeight;
 const VERT_OFFSET_PX = 100;
 const BASELINE_X = HEIGHT - VERT_OFFSET_PX;
 
-const MOUSE_X_RADIUS = 2;
-const MOUSE_Y_RADIUS = 2;
+const MOUSE_X_RADIUS = 4;
+const MOUSE_Y_RADIUS = 6;
 
 const SHOW_BASELINE = false;
 
@@ -53,7 +54,7 @@ const distanceToColor = (dist: number): string => {
     return 'blue';
   }
 
-  return 'transparent';
+  return 'lightgrey';
 };
 
 interface DataPoint {
@@ -61,7 +62,7 @@ interface DataPoint {
   time: number;
   distance: number;
   method: string | null;
-  key: number;
+  key: string;
   datePercent: number;
   x: number;
   y: number;
@@ -149,7 +150,7 @@ const Chart = () => {
       START_DATE_MS,
       END_DATE_MS
     );
-    const key = l.time;
+    const key = l.time + ' ' + l.location + ' ' + l.method;
     return {
       ...l,
       key,
@@ -207,22 +208,30 @@ const Chart = () => {
           )}
         </Layer>
         <Layer>
-          {percentages.map(p => (
-            <>
-              {isMousePositionWithinRadius(mousePosition, p) && (
-                <Text x={p.x} y={p.y} text={p.location} />
-              )}
-              <Point
-                color={distanceToColor(p.distance)}
-                radius={0.5}
-                key={p.key}
-                x={p.x}
-                y={p.y}
-              />
-            </>
-          ))}
+          {percentages.map(
+            p =>
+              isMousePositionWithinRadius(mousePosition, p) && (
+                <Point
+                  color={distanceToColor(p.distance)}
+                  opacity={0.2}
+                  radius={10}
+                  key={p.key}
+                  x={p.x}
+                  y={p.y}
+                />
+              )
+          )}
         </Layer>
       </Stage>
+      {percentages.map(p => (
+        <>
+          {isMousePositionWithinRadius(mousePosition, p) && (
+            <div className={styles.locationBox}>
+              <div className={styles.locationName}>{p.location}</div>
+            </div>
+          )}
+        </>
+      ))}
     </div>
   );
 };
