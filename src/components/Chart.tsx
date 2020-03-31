@@ -166,7 +166,7 @@ const Chart = () => {
 
   return (
     <div ref={ref}>
-      <Stage width={WIDTH} height={HEIGHT}>
+      <Stage x={0} width={WIDTH} height={HEIGHT}>
         <Layer>
           {labelLocations.map(y => (
             <Line
