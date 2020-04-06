@@ -1,5 +1,5 @@
 .locationBox {
-  position: absolute;
+  position: fixed;
   background-color: white;
   padding: 8px;
   width: 500px;

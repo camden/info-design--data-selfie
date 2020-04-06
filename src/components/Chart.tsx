@@ -1,16 +1,19 @@
-import React from 'react';
-import { Stage, Line, Layer, Text } from 'react-konva';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
+import { Stage, Line, Layer, Text, FastLayer, StageProps } from 'react-konva';
 import Locations from '../data/location-data';
 import Point from './Point';
 import useMousePosition, { MousePosition } from '@react-hook/mouse-position';
 import styles from './Chart.module.css';
+import { KonvaEventObject } from 'konva/types/Node';
 
 const START_DATE_MS = 1580083200; // 1/27 at midnight
 const END_DATE_MS = 1585531182; // 3/29 at 6:19pm
 const DIST_MAX_MILES = 3000;
 
-const WIDTH = window.innerWidth;
-const HEIGHT = window.innerHeight;
+const WIDTH = document.documentElement.clientWidth * 16;
+const HEIGHT = document.documentElement.clientHeight * 1;
+const STAGE_WIDTH = window.innerWidth;
+const STAGE_HEIGHT = window.innerHeight;
 const VERT_OFFSET_PX = 100;
 const BASELINE_X = HEIGHT - VERT_OFFSET_PX;
 
@@ -79,7 +82,6 @@ const getLineStyleForDataPoint = (dataPoint: DataPoint) => {
   if (dataPoint.method === 'walk') {
     return {
       stroke: 'orange',
-      dash: [2, 4],
     };
   }
 
@@ -142,9 +144,9 @@ const isMousePositionWithinRadius = (
 };
 
 const Chart = () => {
-  const [mousePosition, ref] = useMousePosition(0, 0, 30);
+  const [mousePosition, mousePositionRef] = useMousePosition(0, 0, 30);
 
-  const percentages = Locations.map(l => {
+  const percentages = Locations.map((l) => {
     const datePercent = getPercentOfDateBetween(
       l.time,
       START_DATE_MS,
@@ -161,71 +163,135 @@ const Chart = () => {
   });
 
   const labelLocations = [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875].map(
-    y => y * BASELINE_X
+    (y) => y * BASELINE_X
   );
 
+  const labelXLocations = [10].concat(
+    [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+    ].map((x) => x * 1000)
+  );
+
+  useEffect(() => {
+    const handleScroll = () => {};
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
+
+  const onDragEnd = useCallback((evt: KonvaEventObject<DragEvent>) => {
+    const s = stageRef.current as any;
+    console.log(s.attrs.x);
+    setMouseOffset({
+      x: -s.attrs.x,
+      y: -s.attrs.y,
+    });
+  }, []);
+
+  const stageRef = useRef<Stage>(null);
+
+  const adjustedMousePosition = {
+    ...mousePosition,
+    x: (mousePosition.x || 0) + mouseOffset.x,
+    y: (mousePosition.y || 0) + mouseOffset.y,
+  };
+
   return (
-    <div ref={ref}>
-      <Stage x={0} width={WIDTH} height={HEIGHT}>
-        <Layer>
-          {labelLocations.map(y => (
-            <Line
-              key={y}
-              points={[0, y, WIDTH, y]}
-              stroke="lightgrey"
-              strokeWidth={0.5}
-            ></Line>
-          ))}
-          {labelLocations.map(y => (
-            <Text
-              x={10}
-              y={y - 14}
-              fill={'lightgrey'}
-              text={`${Math.round(inverseOfDistanceToChartY(y))} miles`}
-            />
-          ))}
-        </Layer>
-        <Layer>
-          {SHOW_BASELINE && (
-            <Line
-              points={[0, BASELINE_X, WIDTH, BASELINE_X]}
-              stroke="black"
-              strokeWidth={0.1}
-            ></Line>
-          )}
-        </Layer>
-        <Layer>
-          {percentages.map(
-            (p, index, arr) =>
-              index !== arr.length - 1 && (
-                <Line
-                  points={[p.x, p.y, arr[index + 1].x, arr[index + 1].y]}
-                  stroke="black"
-                  strokeWidth={2}
-                  {...getLineStyleForDataPoint(p)}
-                ></Line>
-              )
-          )}
-        </Layer>
-        <Layer>
-          {percentages.map(
-            p =>
-              isMousePositionWithinRadius(mousePosition, p) && (
-                <Point
-                  color={distanceToColor(p.distance)}
-                  opacity={0.2}
-                  radius={10}
-                  key={p.key}
-                  x={p.x}
-                  y={p.y}
+    <div ref={mousePositionRef}>
+      <div className={styles.wrapper}>
+        <Stage
+          ref={stageRef}
+          width={STAGE_WIDTH}
+          height={STAGE_HEIGHT}
+          draggable
+          onDragEnd={onDragEnd}
+        >
+          <FastLayer>
+            {labelLocations.map((y) => (
+              <Line
+                key={y}
+                points={[0, y, WIDTH, y]}
+                stroke="lightgrey"
+                strokeWidth={0.5}
+              ></Line>
+            ))}
+            {labelXLocations.map((x) =>
+              labelLocations.map((y) => (
+                <Text
+                  x={x}
+                  y={y - 14}
+                  fill={'lightgrey'}
+                  text={`${Math.round(inverseOfDistanceToChartY(y))} miles`}
                 />
-              )
-          )}
-        </Layer>
-      </Stage>
-      {percentages.map(p => (
+              ))
+            )}
+          </FastLayer>
+          <FastLayer>
+            {SHOW_BASELINE && (
+              <Line
+                points={[0, BASELINE_X, WIDTH, BASELINE_X]}
+                stroke="black"
+                strokeWidth={0.1}
+              ></Line>
+            )}
+          </FastLayer>
+          <FastLayer>
+            {percentages.map(
+              (p, index, arr) =>
+                index !== arr.length - 1 && (
+                  <Line
+                    points={[p.x, p.y, arr[index + 1].x, arr[index + 1].y]}
+                    stroke="black"
+                    strokeWidth={2}
+                    {...getLineStyleForDataPoint(p)}
+                  ></Line>
+                )
+            )}
+          </FastLayer>
+          <FastLayer>
+            {percentages.map(
+              (p) =>
+                isMousePositionWithinRadius(adjustedMousePosition, p) && (
+                  <Point
+                    color={distanceToColor(p.distance)}
+                    opacity={0.2}
+                    radius={10}
+                    key={p.key}
+                    x={p.x}
+                    y={p.y}
+                  />
+                )
+            )}
+          </FastLayer>
+        </Stage>
+      </div>
+      {percentages.map((p) => (
         <>
-          {isMousePositionWithinRadius(mousePosition, p) && (
+          {isMousePositionWithinRadius(adjustedMousePosition, p) && (
             <div className={styles.locationBox}>
               <div className={styles.locationName}>{p.location}</div>
             </div>
