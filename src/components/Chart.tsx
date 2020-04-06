@@ -5,6 +5,7 @@ import Point from './Point';
 import useMousePosition, { MousePosition } from '@react-hook/mouse-position';
 import styles from './Chart.module.css';
 import { KonvaEventObject } from 'konva/types/Node';
+import { format, fromUnixTime } from 'date-fns';
 
 const START_DATE_MS = 1580083200; // 1/27 at midnight
 const END_DATE_MS = 1585531182; // 3/29 at 6:19pm
@@ -15,7 +16,7 @@ const HEIGHT = document.documentElement.clientHeight * 1;
 const STAGE_WIDTH = window.innerWidth;
 const STAGE_HEIGHT = window.innerHeight;
 const VERT_OFFSET_PX = 100;
-const BASELINE_X = HEIGHT - VERT_OFFSET_PX;
+const BASELINE_Y = HEIGHT - VERT_OFFSET_PX;
 
 const MOUSE_X_RADIUS = 4;
 const MOUSE_Y_RADIUS = 6;
@@ -26,11 +27,11 @@ const distanceToChartY = (dist: number): number => {
   // https://math.stackexchange.com/questions/970094/convert-a-linear-scale-to-a-logarithmic-scale
   const result = (3000 / 3.47) * Math.log10(1 + dist);
 
-  return (1 - result / DIST_MAX_MILES) * BASELINE_X;
+  return (1 - result / DIST_MAX_MILES) * BASELINE_Y;
 };
 
 const inverseOfDistanceToChartY = (y: number): number => {
-  const tmp = DIST_MAX_MILES * (3.47 / 3000) * (1 - y / BASELINE_X);
+  const tmp = DIST_MAX_MILES * (3.47 / 3000) * (1 - y / BASELINE_Y);
   return Math.pow(10, tmp);
 };
 
@@ -143,6 +144,15 @@ const isMousePositionWithinRadius = (
   return withinXBounds && withinYBounds;
 };
 
+const getDateFromX = (x: number): string => {
+  const xPercent = x / WIDTH;
+  const dateFromPercent = Math.floor(
+    START_DATE_MS + xPercent * (END_DATE_MS - START_DATE_MS)
+  );
+  const date = format(fromUnixTime(dateFromPercent), 'M-d-yy');
+  return date;
+};
+
 const Chart = () => {
   const [mousePosition, mousePositionRef] = useMousePosition(0, 0, 30);
 
@@ -163,7 +173,7 @@ const Chart = () => {
   });
 
   const labelLocations = [0, 0.125, 0.25, 0.375, 0.5, 0.625, 0.75, 0.875].map(
-    (y) => y * BASELINE_X
+    (y) => y * BASELINE_Y
   );
 
   const labelXLocations = [10].concat(
@@ -194,6 +204,11 @@ const Chart = () => {
     ].map((x) => x * 1000)
   );
 
+  const dateLabelXLocations: number[] = [];
+  for (let i = 0; i < 100; i++) {
+    dateLabelXLocations.push(370 * i);
+  }
+
   useEffect(() => {
     const handleScroll = () => {};
 
@@ -203,6 +218,8 @@ const Chart = () => {
 
   const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
 
+  const stageRef = useRef<Stage>(null);
+
   const onDragEnd = useCallback((evt: KonvaEventObject<DragEvent>) => {
     const s = stageRef.current as any;
     setMouseOffset({
@@ -210,8 +227,6 @@ const Chart = () => {
       y: -s.attrs.y,
     });
   }, []);
-
-  const stageRef = useRef<Stage>(null);
 
   const adjustedMousePosition = {
     ...mousePosition,
@@ -252,11 +267,27 @@ const Chart = () => {
           <FastLayer>
             {SHOW_BASELINE && (
               <Line
-                points={[0, BASELINE_X, WIDTH, BASELINE_X]}
+                points={[0, BASELINE_Y, WIDTH, BASELINE_Y]}
                 stroke="black"
                 strokeWidth={0.1}
               ></Line>
             )}
+            {dateLabelXLocations.map((x) => (
+              <>
+                <Line
+                  points={[x, BASELINE_Y, x, BASELINE_Y + 8]}
+                  stroke="grey"
+                  strokeWidth={2}
+                />
+                <Text
+                  text={getDateFromX(x)}
+                  x={x}
+                  fill="grey"
+                  y={BASELINE_Y + 10}
+                  rotation={45}
+                />
+              </>
+            ))}
           </FastLayer>
           <FastLayer>
             {percentages.map(
