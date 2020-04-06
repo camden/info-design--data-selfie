@@ -205,7 +205,6 @@ const Chart = () => {
 
   const onDragEnd = useCallback((evt: KonvaEventObject<DragEvent>) => {
     const s = stageRef.current as any;
-    console.log(s.attrs.x);
     setMouseOffset({
       x: -s.attrs.x,
       y: -s.attrs.y,
