@@ -1,26 +1,26 @@
 {
   "files": {
-    "main.css": "/info-design--data-selfie/static/css/main.a36bdf7c.chunk.css",
-    "main.js": "/info-design--data-selfie/static/js/main.a1bce15f.chunk.js",
-    "main.js.map": "/info-design--data-selfie/static/js/main.a1bce15f.chunk.js.map",
+    "main.css": "/info-design--data-selfie/static/css/main.45ca6d63.chunk.css",
+    "main.js": "/info-design--data-selfie/static/js/main.8446a0a5.chunk.js",
+    "main.js.map": "/info-design--data-selfie/static/js/main.8446a0a5.chunk.js.map",
     "runtime-main.js": "/info-design--data-selfie/static/js/runtime-main.b62490ce.js",
     "runtime-main.js.map": "/info-design--data-selfie/static/js/runtime-main.b62490ce.js.map",
     "static/css/2.0f8d5871.chunk.css": "/info-design--data-selfie/static/css/2.0f8d5871.chunk.css",
-    "static/js/2.8d64b08b.chunk.js": "/info-design--data-selfie/static/js/2.8d64b08b.chunk.js",
-    "static/js/2.8d64b08b.chunk.js.map": "/info-design--data-selfie/static/js/2.8d64b08b.chunk.js.map",
+    "static/js/2.05e37312.chunk.js": "/info-design--data-selfie/static/js/2.05e37312.chunk.js",
+    "static/js/2.05e37312.chunk.js.map": "/info-design--data-selfie/static/js/2.05e37312.chunk.js.map",
     "index.html": "/info-design--data-selfie/index.html",
-    "precache-manifest.657f5dd5df44843c49d68a65d1587e21.js": "/info-design--data-selfie/precache-manifest.657f5dd5df44843c49d68a65d1587e21.js",
+    "precache-manifest.e5f5f214b22f82574e5f926b871119ee.js": "/info-design--data-selfie/precache-manifest.e5f5f214b22f82574e5f926b871119ee.js",
     "service-worker.js": "/info-design--data-selfie/service-worker.js",
     "static/css/2.0f8d5871.chunk.css.map": "/info-design--data-selfie/static/css/2.0f8d5871.chunk.css.map",
-    "static/css/main.a36bdf7c.chunk.css.map": "/info-design--data-selfie/static/css/main.a36bdf7c.chunk.css.map",
-    "static/js/2.8d64b08b.chunk.js.LICENSE.txt": "/info-design--data-selfie/static/js/2.8d64b08b.chunk.js.LICENSE.txt",
+    "static/css/main.45ca6d63.chunk.css.map": "/info-design--data-selfie/static/css/main.45ca6d63.chunk.css.map",
+    "static/js/2.05e37312.chunk.js.LICENSE.txt": "/info-design--data-selfie/static/js/2.05e37312.chunk.js.LICENSE.txt",
     "static/media/index.css": "/info-design--data-selfie/static/media/rubik-latin-900italic.5b173e43.woff"
   },
   "entrypoints": [
     "static/js/runtime-main.b62490ce.js",
     "static/css/2.0f8d5871.chunk.css",
-    "static/js/2.8d64b08b.chunk.js",
-    "static/css/main.a36bdf7c.chunk.css",
-    "static/js/main.a1bce15f.chunk.js"
+    "static/js/2.05e37312.chunk.js",
+    "static/css/main.45ca6d63.chunk.css",
+    "static/js/main.8446a0a5.chunk.js"
   ]
 }
