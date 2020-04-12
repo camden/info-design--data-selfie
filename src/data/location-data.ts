@@ -1243,12 +1243,6 @@ export default [
   },
   { location: '206_NORTHAMPTON', time: 1582180200, distance: 0, method: null },
   {
-    location: 'GABES_PLACE',
-    time: 1582187400,
-    distance: 278.35472456084324,
-    method: null,
-  },
-  {
     location: '206_NORTHAMPTON',
     time: 1582226700,
     distance: 0,
@@ -1315,6 +1309,12 @@ export default [
     time: 1582260300,
     distance: 106.19253005953873,
     method: 'van',
+  },
+  {
+    location: 'GABES_PLACE',
+    time: 1582271940,
+    distance: 278.35472456084324,
+    method: null,
   },
   {
     location: 'GABES_PLACE',
