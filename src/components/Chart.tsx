@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Stage, Line, Layer, Text, FastLayer, StageProps } from 'react-konva';
+import { Stage, Line, Text, FastLayer } from 'react-konva';
 import Locations from '../data/location-data';
 import Point from './Point';
 import useMousePosition, { MousePosition } from '@react-hook/mouse-position';
@@ -11,7 +11,7 @@ const START_DATE_MS = 1580083200; // 1/27 at midnight
 const END_DATE_MS = 1585531182; // 3/29 at 6:19pm
 const DIST_MAX_MILES = 3000;
 
-const WIDTH = document.documentElement.clientWidth * 16;
+const WIDTH = document.documentElement.clientWidth * 1;
 const HEIGHT = document.documentElement.clientHeight * 1;
 const STAGE_WIDTH = window.innerWidth;
 const STAGE_HEIGHT = window.innerHeight;
@@ -22,6 +22,8 @@ const MOUSE_X_RADIUS = 4;
 const MOUSE_Y_RADIUS = 6;
 
 const SHOW_BASELINE = false;
+const SHOW_DATE_LABELS = false;
+const SHOW_MILES_LABELS = false;
 
 const distanceToChartY = (dist: number): number => {
   // https://math.stackexchange.com/questions/970094/convert-a-linear-scale-to-a-logarithmic-scale
@@ -76,7 +78,7 @@ const getLineStyleForDataPoint = (dataPoint: DataPoint) => {
   if (!dataPoint.method) {
     return {
       stroke: 'black',
-      strokeWidth: 0.1,
+      // strokeWidth: 0.1,
     };
   }
 
@@ -241,29 +243,30 @@ const Chart = () => {
           ref={stageRef}
           width={STAGE_WIDTH}
           height={STAGE_HEIGHT}
-          draggable
           onDragEnd={onDragEnd}
         >
-          <FastLayer>
-            {labelLocations.map((y) => (
-              <Line
-                key={y}
-                points={[0, y, WIDTH, y]}
-                stroke="lightgrey"
-                strokeWidth={0.5}
-              ></Line>
-            ))}
-            {labelXLocations.map((x) =>
-              labelLocations.map((y) => (
-                <Text
-                  x={x}
-                  y={y - 14}
-                  fill={'lightgrey'}
-                  text={`${Math.round(inverseOfDistanceToChartY(y))} miles`}
-                />
-              ))
-            )}
-          </FastLayer>
+          {SHOW_MILES_LABELS && (
+            <FastLayer>
+              {labelLocations.map((y) => (
+                <Line
+                  key={y}
+                  points={[0, y, WIDTH, y]}
+                  stroke="lightgrey"
+                  strokeWidth={0.5}
+                ></Line>
+              ))}
+              {labelXLocations.map((x) =>
+                labelLocations.map((y) => (
+                  <Text
+                    x={x}
+                    y={y - 14}
+                    fill={'lightgrey'}
+                    text={`${Math.round(inverseOfDistanceToChartY(y))} miles`}
+                  />
+                ))
+              )}
+            </FastLayer>
+          )}
           <FastLayer>
             {SHOW_BASELINE && (
               <Line
@@ -272,22 +275,23 @@ const Chart = () => {
                 strokeWidth={0.1}
               ></Line>
             )}
-            {dateLabelXLocations.map((x) => (
-              <>
-                <Line
-                  points={[x, BASELINE_Y, x, BASELINE_Y + 8]}
-                  stroke="grey"
-                  strokeWidth={2}
-                />
-                <Text
-                  text={getDateFromX(x)}
-                  x={x}
-                  fill="grey"
-                  y={BASELINE_Y + 10}
-                  rotation={45}
-                />
-              </>
-            ))}
+            {SHOW_DATE_LABELS &&
+              dateLabelXLocations.map((x) => (
+                <>
+                  <Line
+                    points={[x, BASELINE_Y, x, BASELINE_Y + 8]}
+                    stroke="grey"
+                    strokeWidth={2}
+                  />
+                  <Text
+                    text={getDateFromX(x)}
+                    x={x}
+                    fill="grey"
+                    y={BASELINE_Y + 10}
+                    rotation={45}
+                  />
+                </>
+              ))}
           </FastLayer>
           <FastLayer>
             {percentages.map(
@@ -296,7 +300,9 @@ const Chart = () => {
                   <Line
                     points={[p.x, p.y, arr[index + 1].x, arr[index + 1].y]}
                     stroke="black"
-                    strokeWidth={2}
+                    strokeWidth={10}
+                    lineCap="round"
+                    opacity={0.5}
                     {...getLineStyleForDataPoint(p)}
                   ></Line>
                 )
