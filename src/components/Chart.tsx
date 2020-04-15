@@ -11,10 +11,13 @@ const START_DATE_MS = 1580083200; // 1/27 at midnight
 const END_DATE_MS = 1585531182; // 3/29 at 6:19pm
 const DIST_MAX_MILES = 3000;
 
+const NUMBER_OF_PARTS = 2;
+const CHUNK_TO_RENDER = 2; // 1 based index
+
 const WIDTH = document.documentElement.clientWidth * 1;
 const HEIGHT = document.documentElement.clientHeight * 1;
-const STAGE_WIDTH = window.innerWidth;
-const STAGE_HEIGHT = window.innerHeight;
+const STAGE_WIDTH = WIDTH;
+const STAGE_HEIGHT = HEIGHT;
 const VERT_OFFSET_PX = 100;
 const BASELINE_Y = HEIGHT - VERT_OFFSET_PX;
 
@@ -77,8 +80,8 @@ interface DataPoint {
 const getLineStyleForDataPoint = (dataPoint: DataPoint) => {
   if (!dataPoint.method) {
     return {
-      stroke: 'black',
-      // strokeWidth: 0.1,
+      stroke: 'darkgrey',
+      opacity: 1,
     };
   }
 
@@ -158,11 +161,30 @@ const getDateFromX = (x: number): string => {
 const Chart = () => {
   const [mousePosition, mousePositionRef] = useMousePosition(0, 0, 30);
 
-  const percentages = Locations.map((l) => {
+  const sizeOfEachChunk = Math.round(Locations.length / NUMBER_OF_PARTS);
+  const startIdx = (CHUNK_TO_RENDER - 1) * sizeOfEachChunk;
+  const endIdx = startIdx + sizeOfEachChunk + 1;
+  const croppedLocations = Locations.slice(startIdx, endIdx);
+
+  let earliestTime = croppedLocations[0].time;
+  let latestTime = croppedLocations[0].time;
+
+  for (let i = 0; i < croppedLocations.length; i++) {
+    const loc = croppedLocations[i];
+    if (loc.time < earliestTime) {
+      earliestTime = loc.time;
+    }
+
+    if (loc.time > latestTime) {
+      latestTime = loc.time;
+    }
+  }
+
+  const percentages = croppedLocations.map((l) => {
     const datePercent = getPercentOfDateBetween(
       l.time,
-      START_DATE_MS,
-      END_DATE_MS
+      earliestTime - 10000,
+      latestTime + 10000
     );
     const key = l.time + ' ' + l.location + ' ' + l.method;
     return {
@@ -246,7 +268,7 @@ const Chart = () => {
           onDragEnd={onDragEnd}
         >
           {SHOW_MILES_LABELS && (
-            <FastLayer>
+            <FastLayer height={HEIGHT} width={WIDTH}>
               {labelLocations.map((y) => (
                 <Line
                   key={y}
@@ -267,7 +289,7 @@ const Chart = () => {
               )}
             </FastLayer>
           )}
-          <FastLayer>
+          <FastLayer height={HEIGHT} width={WIDTH}>
             {SHOW_BASELINE && (
               <Line
                 points={[0, BASELINE_Y, WIDTH, BASELINE_Y]}
@@ -293,22 +315,22 @@ const Chart = () => {
                 </>
               ))}
           </FastLayer>
-          <FastLayer>
+          <FastLayer height={HEIGHT} width={WIDTH}>
             {percentages.map(
               (p, index, arr) =>
                 index !== arr.length - 1 && (
                   <Line
                     points={[p.x, p.y, arr[index + 1].x, arr[index + 1].y]}
-                    stroke="black"
                     strokeWidth={10}
                     lineCap="round"
-                    opacity={0.5}
+                    opacity={1}
+                    stroke="lightblue"
                     {...getLineStyleForDataPoint(p)}
                   ></Line>
                 )
             )}
           </FastLayer>
-          <FastLayer>
+          <FastLayer height={HEIGHT} width={WIDTH}>
             {percentages.map(
               (p) =>
                 isMousePositionWithinRadius(adjustedMousePosition, p) && (

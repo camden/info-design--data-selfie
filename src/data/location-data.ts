@@ -446,7 +446,6 @@ export default [
     method: 'walk',
   },
   { location: '206_NORTHAMPTON', time: 1580778900, distance: 0, method: null },
-  { location: '206_NORTHAMPTON', time: 1580889960, distance: 0, method: null },
   {
     location: '206_NORTHAMPTON',
     time: 1580936400,
@@ -520,6 +519,7 @@ export default [
     distance: 2.099265740278713,
     method: 'Red line to orange line',
   },
+  { location: '206_NORTHAMPTON', time: 1580975940, distance: 0, method: null },
   {
     location: '206_NORTHAMPTON',
     time: 1581023700,
@@ -690,7 +690,6 @@ export default [
     method: 'walk',
   },
   { location: '206_NORTHAMPTON', time: 1581229800, distance: 0, method: null },
-  { location: '206_NORTHAMPTON', time: 1581235200, distance: 0, method: null },
   {
     location: '206_NORTHAMPTON',
     time: 1581302700,
@@ -733,6 +732,7 @@ export default [
     distance: 0.508860454606,
     method: 'walk',
   },
+  { location: '206_NORTHAMPTON', time: 1581321540, distance: 0, method: null },
   {
     location: '206_NORTHAMPTON',
     time: 1581369300,
@@ -1720,7 +1720,7 @@ export default [
   {
     location: 'BOBBY_BISHOP_AIRPORT',
     time: 1582929000,
-    distance: 429.4896724,
+    distance: 429.489672361228,
     method: 'shuttle',
   },
   {
